@@ -1,0 +1,52 @@
+<html>
+    <head>
+        <style type="text/css">
+            form{
+                background: lightgray;
+                padding: 5px;
+                position: fixed;
+                display: flex;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: 0;
+            }
+            #input{
+                flex-grow: 1;
+            }
+            #messages{
+                list-style-type: none;
+            }
+            #messages > li:nth-child(odd){
+                background: lightblue;
+            }
+        </style>
+    </head>
+    <ul id="messages"></ul>
+    <form id="form">
+        <input id="input">
+        <button>Send</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const form = document.getElementById("form");
+        const input = document.getElementById("input");
+        const messages = document.getElementById("messages");
+
+        form.addEventListener('submit', function(e){
+            e.preventDefault();
+            if(input.value){
+                socket.emit("chat",input.value);
+                input.value = "";
+            }
+        });
+        socket.on("chat", (msg) =>{
+            const item = document.createElement("li");
+            item.textContent = msg;
+            messages.appendChild(item);
+            window.scrollTo(0,document.body.scrollHeight);
+        });
+    </script>
+    <body></body>
+</html>
